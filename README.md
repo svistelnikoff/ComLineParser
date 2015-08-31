@@ -6,7 +6,8 @@ Project created with Visual Studio 2015 Community Edition (default settings for 
 Application parses user input commands from console and executes them. All executed commands are saved
 in command log file (xml) located in the same directory with application.  
 
-Available commands
+Available commands:
+
 /? /help -help   - help command.
                    Prints this message and list of available commands.
 
