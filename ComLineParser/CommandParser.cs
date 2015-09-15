@@ -5,8 +5,8 @@ namespace ComLineParser
 {
     public static class Commander
     {
-        static Queue<Command> Commands = new Queue<Command>();
-        static bool StartUpCommandsExecuted = false;
+        static readonly Queue<Command> Commands = new Queue<Command>();
+        static bool StartUpCommandsExecuted;
         static string _user_input;
         static string[] _user_commands;
 
@@ -23,7 +23,11 @@ namespace ComLineParser
             {
                 Console.WriteLine("\nEnter command or set of commands:");
                 _user_input = Console.ReadLine();
-                _user_commands = _user_input.Split((string[])null, StringSplitOptions.RemoveEmptyEntries);
+                if (_user_input != null)
+                    _user_commands = _user_input.Split((string[]) null, StringSplitOptions.RemoveEmptyEntries);
+                else
+                    _user_commands = null;
+
             }
             Commands.Clear();
             if (_user_commands == null || _user_commands.Length == 0) return;
@@ -38,10 +42,9 @@ namespace ComLineParser
 
         public static void ProcessCommands()
         {
-            Command cmd;
             while (Commands.Count != 0)
             {
-                cmd = Commands.Dequeue();
+                var cmd = Commands.Dequeue();
                 cmd.Action();
             }
         }
@@ -74,7 +77,7 @@ namespace ComLineParser
 
         public static bool ConfirmExit()
         {
-            if(Exit == true)
+            if(Exit)
             {
                 Console.WriteLine("Are you sure you want to terminate application ? [y] - terminate");
                 ConsoleKeyInfo _result = Console.ReadKey();

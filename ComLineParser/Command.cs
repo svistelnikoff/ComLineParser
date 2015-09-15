@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 
 namespace ComLineParser
@@ -23,20 +20,11 @@ namespace ComLineParser
     public abstract class Command
     {
         protected ECommandTypes type;
-        public ECommandTypes Type
-        {
-            get { return (type); }
-        }
+        public ECommandTypes Type => (type);
         protected string name;
-        public string Name
-        {
-            get { return (name); }
-        }
+        public string Name => (name);
         protected string[] parameters;
-        public string[] Parameters
-        {
-            get { return (parameters); }
-        }
+        public string[] Parameters => (parameters);
         protected string Description;
         protected ICommandLogger CommandLogger;
 
@@ -67,15 +55,10 @@ namespace ComLineParser
 
         public static bool StringIsCommand(string _value)
         {
-            foreach (string _cmd_pattern in 
-                Command.AvailableCommands.
-                SelectMany(T => T).ToList())
-            {
-                if (String.Compare(_value, _cmd_pattern, StringComparison.OrdinalIgnoreCase) == 0) return (true);
-            }
-            return (false);
+            return Command.AvailableCommands.SelectMany(T => T).ToList().
+                    Any(_cmd_pattern => 
+                            String.Compare(_value, _cmd_pattern, StringComparison.OrdinalIgnoreCase) == 0);
         }
-
     }
 
     public class HelpCommand : Command
@@ -224,7 +207,7 @@ namespace ComLineParser
 
         public override void ParseParameters(string[] _params, ref int commandIndex)
         {
-            parameters = new string[1] { String.Empty };
+            parameters = new string[]{ String.Empty };
             int _parameter_index = commandIndex + 1;
             while (_parameter_index < _params.Length && !StringIsCommand(_params[_parameter_index]))
             {
@@ -264,7 +247,7 @@ namespace ComLineParser
 
         public override void ParseParameters(string[] _params, ref int commandIndex)
         {
-            parameters = new string[1] { string.Empty };
+            parameters = new string[] { string.Empty };
             var parameterIndex = commandIndex + 1;
             if (parameterIndex >= _params.Length || StringIsCommand(_params[parameterIndex])) return;
             parameters[0] = _params[parameterIndex];
@@ -309,23 +292,20 @@ namespace ComLineParser
 
     public class UnsupportedCommand : Command
     {
-        string _command_value;
-        public string Value
-        {
-            get { return (_command_value); }
-        }
+        public string Value { get; }
+
         public UnsupportedCommand(string _value)
         {
             this.Description = "Unsupported command";
             this.name = "Unsupported";
             this.type = ECommandTypes.Unsupported;
-            _command_value = _value;
+            Value = _value;
             CommandLogger = new UnsupportedCommandLogger();
         }
 
         public override void Action()
         {
-            Console.WriteLine("Command <" + _command_value+ "> - " + "is not supported.");
+            Console.WriteLine("Command <" + Value+ "> - " + "is not supported.");
             Console.WriteLine("Use </?> to see set of allowed commands, <-exit> to terminate");
             CommandLogger.SaveToFile(this);
         }

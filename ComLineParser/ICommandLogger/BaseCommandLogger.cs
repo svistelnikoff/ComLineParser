@@ -1,10 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComLineParser
 {
@@ -38,7 +36,7 @@ namespace ComLineParser
                 LogFile = new XDocument(
                     new XElement(XDocRootName,
                             new XAttribute("description","command log file for ComLineParser"),
-                            new XAttribute("modified", DateTime.Now.ToString())
+                            new XAttribute("modified", DateTime.Now.ToString(CultureInfo.CurrentCulture))
                         )
                     );
                 LogFile.Save(LogFilePath);
@@ -60,14 +58,14 @@ namespace ComLineParser
             }
             else
             {
-                if (String.Compare(_xattribute.Value, "command log file for ComLineParser") != 0)
+                if (!_xattribute.Value.Equals("command log file for ComLineParser"))
                     _xattribute.SetValue("command log file for ComLineParser");
             }
 
             _xattribute = FindXAttribute(LogFile.Root, "modified");
             if (_xattribute == null)
             {
-                LogFile.Root.Add(new XAttribute("modified", DateTime.Now.ToString()));
+                LogFile.Root.Add(new XAttribute("modified", DateTime.Now.ToString(CultureInfo.CurrentCulture)));
             }
         }
 
@@ -86,9 +84,9 @@ namespace ComLineParser
 
         protected void LogModified()
         {
-           XAttribute _xattribute = FindXAttribute(LogFile.Root, "modified");
-           if (_xattribute != null) _xattribute.SetValue(DateTime.Now.ToString());
-            else LogFile.Root.Add(new XAttribute("modified",DateTime.Now.ToString()));
+            XAttribute _xattribute = FindXAttribute(LogFile.Root, "modified");
+           if (_xattribute != null) _xattribute.SetValue(DateTime.Now.ToString(CultureInfo.CurrentCulture));
+            else LogFile.Root.Add(new XAttribute("modified",DateTime.Now.ToString(CultureInfo.CurrentCulture)));
         }
 
         protected XElement FindCommandNode(Command _command)
@@ -122,7 +120,7 @@ namespace ComLineParser
 
             CommandNodeXElement = FindCommandNode(command);
             CommandXElement = new XElement(command.Name,
-                            new XAttribute("invoked", DateTime.Now.ToString()),
+                            new XAttribute("invoked", DateTime.Now.ToString(CultureInfo.CurrentCulture)),
                             new XAttribute("user", Program.User));
             AddCommandXElementParameters(command);
             CommandNodeXElement.Add(CommandXElement);

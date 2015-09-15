@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml.Linq;
 
 namespace ComLineParser
 {
@@ -18,11 +12,10 @@ namespace ComLineParser
 
         protected override void AddCommandXElementParameters(Command command)
         {
-            if (command.Type == ECommandTypes.Unsupported && (command as UnsupportedCommand).Value != null)
-            {
-                CommandXElement.Add(new XAttribute("command", (command as UnsupportedCommand).Value));
-            }
-
+            if (command.Type != ECommandTypes.Unsupported) return;
+            var unsupportedCommand = (UnsupportedCommand)command;
+            if (unsupportedCommand.Value != null)
+                CommandXElement.Add(new XAttribute("command", unsupportedCommand.Value));
         }
     }
 }
