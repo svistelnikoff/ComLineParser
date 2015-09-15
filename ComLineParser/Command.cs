@@ -15,7 +15,9 @@ namespace ComLineParser
         KeyValue = 2,
         Ping = 3,
         Print = 4,
-        Exit = 5
+        Exit = 5,
+        SetUser = 6,
+        GetUser = 7
     }
 
     public abstract class Command
@@ -220,6 +222,44 @@ namespace ComLineParser
         }
 
     }
+
+    public class SetUserCommand : Command
+    {
+        public SetUserCommand()
+        {
+            this.Description = "Set user command invoked";
+            this.name = "SetUser";
+            this.type = ECommandTypes.Print;
+            CommandLogger = new PrintCommandLogger();
+        }
+
+        public override void Action()
+        {
+            if (parameters == null || parameters[0] == String.Empty)
+            {
+                Console.WriteLine(Description + ", message is empty");
+            }
+            else
+            {
+                Console.WriteLine(Description + " - printing message:" + parameters[0]);
+            }
+            CommandLogger.SaveToFile(this);
+        }
+
+        public override void ParseParameters(string[] _params, ref int _command_index)
+        {
+            parameters = new string[1] { String.Empty };
+            int _parameter_index = _command_index + 1;
+            while (_parameter_index < _params.Length && !StringIsCommand(_params[_parameter_index]))
+            {
+                parameters[0] += _params[_parameter_index++];
+                if (_parameter_index < _params.Length) parameters[0] += " ";
+                _command_index++;
+            }
+        }
+
+    }
+
 
     public class ExitCommand : Command
     {
