@@ -45,6 +45,8 @@ namespace ComLineParser
         public static readonly string[] KeyValueCommands = { "-k" };
         public static readonly string[] PingCommands =     { "-ping" };
         public static readonly string[] PrintCommands =    { "-print" };
+        public static readonly string[] GetUserCommands =  { "-getuser"};
+        public static readonly string[] SetUserCommands =  { "-setuser" };
 
         public static readonly string[][] AvailableCommands =
         {
@@ -52,7 +54,9 @@ namespace ComLineParser
             ExitCommands,
             KeyValueCommands,
             PingCommands,
-            PrintCommands
+            PrintCommands,
+            GetUserCommands,
+            SetUserCommands
         };
 
         public abstract void Action();
@@ -108,6 +112,15 @@ namespace ComLineParser
             foreach (string str in PrintCommands)
                 Console.Write(str + " ");
             Console.WriteLine("\t\t - print command.\n\t\t   Prints message followed after command into console window.\n");
+            //show getuser section
+            foreach (string str in GetUserCommands)
+                Console.Write(str + " ");
+            Console.WriteLine("\t - get user command.\n\t\t   Prints current username. Default username is <anonym>.\n");
+            //show setuser section
+            foreach (string str in SetUserCommands)
+                Console.Write(str + " ");
+            Console.WriteLine("\t - set user command.\n\t\t   Changes current user. User input <-setuser qwerty> will");
+            Console.WriteLine("\t\t   change current user to <qwerty>.\n");
             CommandLogger.SaveToFile(this);
         }
     }

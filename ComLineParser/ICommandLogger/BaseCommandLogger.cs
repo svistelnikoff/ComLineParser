@@ -134,14 +134,8 @@ namespace ComLineParser
 
         public virtual void SaveToFile(Command command)
         {
-            if (File.Exists(LogFilePath)) OpenLogFile();
-            else CreateNewLogFile();
-
-            XElement _command_node = FindCommandNode(command);
-            _command_node.Add(new XElement(command.Name,
-                            new XAttribute("invoked", DateTime.Now.ToString()))
-                );
-
+            CreateCommandXElement(command);
+            CommandNodeXElement.Add(CommandXElement);
             SaveLogFile();
         }
 

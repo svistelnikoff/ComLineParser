@@ -12,20 +12,18 @@ namespace ComLineParser
     {
         public override void SaveToFile(Command command)
         {
-            if (File.Exists(LogFilePath)) OpenLogFile();
-            else CreateNewLogFile();
-
-            XElement _command_node = FindCommandNode(command);
-            XElement _xcommand = new XElement(command.Name,
-                            new XAttribute("invoked", DateTime.Now.ToString()));
-            if (command.Parameters != null &&
-                command.Parameters.Length > 0)
-            {
-                _xcommand.Add(new XAttribute("message", command.Parameters[0]));
-            }
-            _command_node.Add(_xcommand);
-
+            CreateCommandXElement(command);
+            AddCommandXElementParameters(command);
+            CommandNodeXElement.Add(CommandXElement);
             SaveLogFile();
+        }
+
+        protected override void AddCommandXElementParameters(Command command)
+        {
+            if (command.Parameters != null && command.Parameters.Length > 0)
+            {
+                CommandXElement.Add(new XAttribute("message", command.Parameters[0]));
+            }
         }
     }
 }
