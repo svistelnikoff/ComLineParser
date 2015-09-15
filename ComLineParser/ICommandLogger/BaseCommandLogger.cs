@@ -124,7 +124,8 @@ namespace ComLineParser
             CommandXElement = new XElement(command.Name,
                             new XAttribute("invoked", DateTime.Now.ToString()),
                             new XAttribute("user", Program.User));
-
+            AddCommandXElementParameters(command);
+            CommandNodeXElement.Add(CommandXElement);
         }
 
         protected virtual void AddCommandXElementParameters(Command command)
@@ -135,7 +136,6 @@ namespace ComLineParser
         public virtual void SaveToFile(Command command)
         {
             CreateCommandXElement(command);
-            CommandNodeXElement.Add(CommandXElement);
             SaveLogFile();
         }
 

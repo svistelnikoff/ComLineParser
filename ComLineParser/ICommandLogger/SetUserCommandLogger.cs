@@ -15,8 +15,6 @@ namespace ComLineParser
         public override void SaveToFile(Command command)
         {
             CreateCommandXElement(command);
-            AddCommandXElementParameters(command);
-            CommandNodeXElement.Add(CommandXElement);
             SaveLogFile();
         }
 
