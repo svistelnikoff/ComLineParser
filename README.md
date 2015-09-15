@@ -24,3 +24,9 @@ Available commands:
 
 -print           - print command.
                    Prints message followed after command into console window.
+
+-getuser         -  get user command.
+                  Prints current username. Default username is <anonym>.
+                  
+-setuser         - set user command. Changes current user. User input <-setuser qwerty> will
+                   change current user to <qwerty>.
