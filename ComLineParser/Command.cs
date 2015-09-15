@@ -55,7 +55,7 @@ namespace ComLineParser
 
         public static bool StringIsCommand(string _value)
         {
-            return Command.AvailableCommands.SelectMany(T => T).ToList().
+            return AvailableCommands.SelectMany(T => T).ToList().
                     Any(_cmd_pattern => 
                             String.Compare(_value, _cmd_pattern, StringComparison.OrdinalIgnoreCase) == 0);
         }
@@ -65,9 +65,9 @@ namespace ComLineParser
     {
         public HelpCommand()
         {
-            this.Description = "Help command invoked";
-            this.name = "Help";
-            this.type = ECommandTypes.Help;
+            Description = "Help command invoked";
+            name = "Help";
+            type = ECommandTypes.Help;
             CommandLogger = new GenericCommandLogger();
         }
 
@@ -112,9 +112,9 @@ namespace ComLineParser
     {
         public KeyValueCommand()
         {
-            this.Description = "Key-Value command invoked";
-            this.name = "KeyValue";
-            this.type = ECommandTypes.KeyValue;
+            Description = "Key-Value command invoked";
+            name = "KeyValue";
+            type = ECommandTypes.KeyValue;
             CommandLogger = new KeyValueCommandLogger();
         }
 
@@ -142,7 +142,7 @@ namespace ComLineParser
             int _param_count = 0, _param_index = commandIndex+1;
             while (_param_index < _params.Length)
             {
-                if (Command.StringIsCommand(_params[_param_index])) break;
+                if (StringIsCommand(_params[_param_index])) break;
                 _param_index++;
                 _param_count++;
             }
@@ -167,9 +167,9 @@ namespace ComLineParser
     {
         public PingCommand()
         {
-            this.Description = "Pinging command invoked";
-            this.name = "Ping";
-            this.type = ECommandTypes.Ping;
+            Description = "Pinging command invoked";
+            name = "Ping";
+            type = ECommandTypes.Ping;
             CommandLogger = new GenericCommandLogger();
         }
 
@@ -186,9 +186,9 @@ namespace ComLineParser
     {
         public PrintCommand()
         {
-            this.Description = "Print command invoked";
-            this.name = "Print";
-            this.type = ECommandTypes.Print;
+            Description = "Print command invoked";
+            name = "Print";
+            type = ECommandTypes.Print;
             CommandLogger = new PrintCommandLogger();
         }
 
@@ -223,9 +223,9 @@ namespace ComLineParser
     {
         public SetUserCommand()
         {
-            this.Description = "Set user command invoked";
-            this.name = "SetUser";
-            this.type = ECommandTypes.SetUser;
+            Description = "Set user command invoked";
+            name = "SetUser";
+            type = ECommandTypes.SetUser;
             CommandLogger = new SetUserCommandLogger();
         }
 
@@ -259,9 +259,9 @@ namespace ComLineParser
     {
         public GetUserCommand()
         {
-            this.Description = "Get user command invoked";
-            this.name = "GetUser";
-            this.type = ECommandTypes.GetUser;
+            Description = "Get user command invoked";
+            name = "GetUser";
+            type = ECommandTypes.GetUser;
             CommandLogger = new GetUserCommandLogger();
         }
 
@@ -277,9 +277,9 @@ namespace ComLineParser
     {
         public ExitCommand()
         {
-            this.Description = "Exit command invoked";
-            this.name = "Exit";
-            this.type = ECommandTypes.Exit;
+            Description = "Exit command invoked";
+            name = "Exit";
+            type = ECommandTypes.Exit;
             CommandLogger = new GenericCommandLogger();
         }
         public override void Action()
@@ -296,9 +296,9 @@ namespace ComLineParser
 
         public UnsupportedCommand(string _value)
         {
-            this.Description = "Unsupported command";
-            this.name = "Unsupported";
-            this.type = ECommandTypes.Unsupported;
+            Description = "Unsupported command";
+            name = "Unsupported";
+            type = ECommandTypes.Unsupported;
             Value = _value;
             CommandLogger = new UnsupportedCommandLogger();
         }
