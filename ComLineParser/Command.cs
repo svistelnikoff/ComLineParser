@@ -19,12 +19,12 @@ namespace ComLineParser
 
     public abstract class Command
     {
-        protected ECommandTypes type;
-        public ECommandTypes Type => (type);
-        protected string name;
-        public string Name => (name);
-        protected string[] parameters;
-        public string[] Parameters => (parameters);
+        protected ECommandTypes _type;
+        public ECommandTypes Type => (_type);
+        protected string _name;
+        public string Name => (_name);
+        protected string[] _parameters;
+        public string[] Parameters => (_parameters);
         protected string Description;
         protected ICommandLogger CommandLogger;
 
@@ -53,11 +53,11 @@ namespace ComLineParser
              
         }
 
-        public static bool StringIsCommand(string _value)
+        public static bool StringIsCommand(string value)
         {
             return AvailableCommands.SelectMany(T => T).ToList().
-                    Any(_cmd_pattern => 
-                            String.Compare(_value, _cmd_pattern, StringComparison.OrdinalIgnoreCase) == 0);
+                    Any(cmdPattern => 
+                            value.Equals(cmdPattern, StringComparison.OrdinalIgnoreCase));
         }
     }
 
@@ -66,8 +66,8 @@ namespace ComLineParser
         public HelpCommand()
         {
             Description = "Help command invoked";
-            name = "Help";
-            type = ECommandTypes.Help;
+            _name = "Help";
+            _type = ECommandTypes.Help;
             CommandLogger = new GenericCommandLogger();
         }
 
@@ -113,53 +113,53 @@ namespace ComLineParser
         public KeyValueCommand()
         {
             Description = "Key-Value command invoked";
-            name = "KeyValue";
-            type = ECommandTypes.KeyValue;
+            _name = "KeyValue";
+            _type = ECommandTypes.KeyValue;
             CommandLogger = new KeyValueCommandLogger();
         }
 
         public override void Action()
         {
             Console.Write(Description);
-            if (parameters != null)
+            if (_parameters != null)
             {
                 Console.WriteLine(" - creating pairs:");
-                for (int i = 0; i < parameters.Length; i++)
+                for (int i = 0; i < _parameters.Length; i++)
                 {
-                    Console.Write(parameters[i++] + " = ");
-                    Console.Write(parameters[i] + ";\n");
+                    Console.Write(_parameters[i++] + " = ");
+                    Console.Write(_parameters[i] + ";\n");
                 }
             }
             else
             {
-                Console.WriteLine(" without parameters.");
+                Console.WriteLine(" without _parameters.");
             }
             CommandLogger.SaveToFile(this);
         }
 
         public override void ParseParameters(string[] _params, ref int commandIndex)
         {
-            int _param_count = 0, _param_index = commandIndex+1;
-            while (_param_index < _params.Length)
+            int paramCount = 0, paramIndex = commandIndex+1;
+            while (paramIndex < _params.Length)
             {
-                if (StringIsCommand(_params[_param_index])) break;
-                _param_index++;
-                _param_count++;
+                if (StringIsCommand(_params[paramIndex])) break;
+                paramIndex++;
+                paramCount++;
             }
-            if (_param_count == 0) return;
+            if (paramCount == 0) return;
 
-            if (_param_count % 2 != 0)
+            if (paramCount % 2 != 0)
             {
-                parameters = new string[_param_count+1];
-                Array.Copy(_params, commandIndex+1, parameters, 0, _param_count);
-                parameters[_param_count] = "NULL";
+                _parameters = new string[paramCount+1];
+                Array.Copy(_params, commandIndex+1, _parameters, 0, paramCount);
+                _parameters[paramCount] = "NULL";
             }
             else
             {
-                parameters = new string[_param_count];
-                Array.Copy(_params, commandIndex+1, parameters, 0, _param_count);
+                _parameters = new string[paramCount];
+                Array.Copy(_params, commandIndex+1, _parameters, 0, paramCount);
             }
-            commandIndex += _param_count;
+            commandIndex += paramCount;
         }
     }
 
@@ -168,8 +168,8 @@ namespace ComLineParser
         public PingCommand()
         {
             Description = "Pinging command invoked";
-            name = "Ping";
-            type = ECommandTypes.Ping;
+            _name = "Ping";
+            _type = ECommandTypes.Ping;
             CommandLogger = new GenericCommandLogger();
         }
 
@@ -187,32 +187,32 @@ namespace ComLineParser
         public PrintCommand()
         {
             Description = "Print command invoked";
-            name = "Print";
-            type = ECommandTypes.Print;
+            _name = "Print";
+            _type = ECommandTypes.Print;
             CommandLogger = new PrintCommandLogger();
         }
 
         public override void Action()
         {
-            if(parameters == null || parameters[0] == String.Empty)
+            if(_parameters == null || _parameters[0] == string.Empty)
             {
                 Console.WriteLine(Description + ", message is empty");
             }
             else
             {
-                Console.WriteLine(Description + " - printing message:" + parameters[0]);
+                Console.WriteLine(Description + " - printing message:" + _parameters[0]);
             }
             CommandLogger.SaveToFile(this);
         }
 
         public override void ParseParameters(string[] _params, ref int commandIndex)
         {
-            parameters = new string[]{ String.Empty };
-            int _parameter_index = commandIndex + 1;
-            while (_parameter_index < _params.Length && !StringIsCommand(_params[_parameter_index]))
+            _parameters = new string[]{ string.Empty };
+            int parameterIndex = commandIndex + 1;
+            while (parameterIndex < _params.Length && !StringIsCommand(_params[parameterIndex]))
             {
-                parameters[0] += _params[_parameter_index++];
-                if (_parameter_index < _params.Length) parameters[0] += " ";
+                _parameters[0] += _params[parameterIndex++];
+                if (parameterIndex < _params.Length) _parameters[0] += " ";
                 commandIndex++; 
             }
         }
@@ -224,14 +224,14 @@ namespace ComLineParser
         public SetUserCommand()
         {
             Description = "Set user command invoked";
-            name = "SetUser";
-            type = ECommandTypes.SetUser;
+            _name = "SetUser";
+            _type = ECommandTypes.SetUser;
             CommandLogger = new SetUserCommandLogger();
         }
 
         public override void Action()
         {
-            if (parameters == null || parameters[0] == string.Empty)
+            if (_parameters == null || _parameters[0] == string.Empty)
             {
                 Console.WriteLine(Description + ", current user is reseted.");
                 CommandLogger.SaveToFile(this);
@@ -239,18 +239,18 @@ namespace ComLineParser
             }
             else
             {
-                Console.WriteLine(Description + " - new user is set:" + parameters[0]);
+                Console.WriteLine(Description + " - new user is set:" + _parameters[0]);
                 CommandLogger.SaveToFile(this);
-                Program.User = parameters[0];
+                Program.User = _parameters[0];
             }
         }
 
         public override void ParseParameters(string[] _params, ref int commandIndex)
         {
-            parameters = new string[] { string.Empty };
+            _parameters = new string[] { string.Empty };
             var parameterIndex = commandIndex + 1;
             if (parameterIndex >= _params.Length || StringIsCommand(_params[parameterIndex])) return;
-            parameters[0] = _params[parameterIndex];
+            _parameters[0] = _params[parameterIndex];
             commandIndex++;
         }
     }
@@ -260,8 +260,8 @@ namespace ComLineParser
         public GetUserCommand()
         {
             Description = "Get user command invoked";
-            name = "GetUser";
-            type = ECommandTypes.GetUser;
+            _name = "GetUser";
+            _type = ECommandTypes.GetUser;
             CommandLogger = new GetUserCommandLogger();
         }
 
@@ -278,8 +278,8 @@ namespace ComLineParser
         public ExitCommand()
         {
             Description = "Exit command invoked";
-            name = "Exit";
-            type = ECommandTypes.Exit;
+            _name = "Exit";
+            _type = ECommandTypes.Exit;
             CommandLogger = new GenericCommandLogger();
         }
         public override void Action()
@@ -294,12 +294,12 @@ namespace ComLineParser
     {
         public string Value { get; }
 
-        public UnsupportedCommand(string _value)
+        public UnsupportedCommand(string value)
         {
             Description = "Unsupported command";
-            name = "Unsupported";
-            type = ECommandTypes.Unsupported;
-            Value = _value;
+            _name = "Unsupported";
+            _type = ECommandTypes.Unsupported;
+            Value = value;
             CommandLogger = new UnsupportedCommandLogger();
         }
 

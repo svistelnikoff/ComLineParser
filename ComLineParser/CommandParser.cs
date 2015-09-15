@@ -6,36 +6,36 @@ namespace ComLineParser
     public static class Commander
     {
         static readonly Queue<Command> Commands = new Queue<Command>();
-        static bool StartUpCommandsExecuted;
-        static string _user_input;
-        static string[] _user_commands;
+        static bool _startUpCommandsExecuted;
+        static string _userInput;
+        static string[] _userCommands;
 
         public static bool Exit = false;
 
-        public static void ParseCommands(string[] _args)
+        public static void ParseCommands(string[] args)
         {
-            if(_args.Length > 0 && StartUpCommandsExecuted == false)
+            if(args.Length > 0 && _startUpCommandsExecuted == false)
             {
-                StartUpCommandsExecuted = true;
-                _user_commands = _args;
+                _startUpCommandsExecuted = true;
+                _userCommands = args;
             }
             else
             {
                 Console.WriteLine("\nEnter command or set of commands:");
-                _user_input = Console.ReadLine();
-                if (_user_input != null)
-                    _user_commands = _user_input.Split((string[]) null, StringSplitOptions.RemoveEmptyEntries);
+                _userInput = Console.ReadLine();
+                if (_userInput != null)
+                    _userCommands = _userInput.Split((string[]) null, StringSplitOptions.RemoveEmptyEntries);
                 else
-                    _user_commands = null;
+                    _userCommands = null;
 
             }
             Commands.Clear();
-            if (_user_commands == null || _user_commands.Length == 0) return;
-            for(int i = 0; i < _user_commands.Length;)
+            if (_userCommands == null || _userCommands.Length == 0) return;
+            for(var i = 0; i < _userCommands.Length;)
             {
-                Command _command = ParseCommand(_user_commands[i]);
-                _command.ParseParameters(_user_commands, ref i);
-                Commands.Enqueue(_command);
+                var command = ParseCommand(_userCommands[i]);
+                command.ParseParameters(_userCommands, ref i);
+                Commands.Enqueue(command);
                 i++;
             }
         }
@@ -49,9 +49,9 @@ namespace ComLineParser
             }
         }
 
-        public static Command ParseCommand(string _value)
+        public static Command ParseCommand(string value)
         {
-            switch (_value)
+            switch (value)
             {
                 case "/?":
                 case "/help":
@@ -71,19 +71,17 @@ namespace ComLineParser
                 case "-setuser":
                     return (new SetUserCommand());
                 default:
-                    return (new UnsupportedCommand(_value));
+                    return (new UnsupportedCommand(value));
             }
         }
 
         public static bool ConfirmExit()
         {
-            if(Exit)
-            {
-                Console.WriteLine("Are you sure you want to terminate application ? [y] - terminate");
-                ConsoleKeyInfo _result = Console.ReadKey();
-                if (_result.Key == ConsoleKey.Y) return (true);
-                Console.Write(" - OK ! Working on...\n");
-            }
+            if (!Exit) return (false);
+            Console.WriteLine("Are you sure you want to terminate application ? [y] - terminate");
+            var result = Console.ReadKey();
+            if (result.Key == ConsoleKey.Y) return (true);
+            Console.Write(" - OK ! Working on...\n");
             return (false);
         }
     }

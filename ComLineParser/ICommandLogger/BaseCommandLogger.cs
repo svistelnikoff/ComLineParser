@@ -49,21 +49,21 @@ namespace ComLineParser
 
         protected void ValidateLogFile()
         {
-            if (String.Compare(LogFile.Root.Name.LocalName, XDocRootName, StringComparison.OrdinalIgnoreCase) != 0)
+            if (LogFile.Root.Name.LocalName.Equals(XDocRootName, StringComparison.OrdinalIgnoreCase))
                 throw (new Exception("File doesn't contain valid root element"));
-            XAttribute _xattribute = FindXAttribute(LogFile.Root, "description");
-            if (_xattribute == null)
+            var xattribute = FindXAttribute(LogFile.Root, "description");
+            if (xattribute == null)
             {
                 LogFile.Root.Add(new XAttribute("description", "command log file for ComLineParser"));
             }
             else
             {
-                if (!_xattribute.Value.Equals("command log file for ComLineParser"))
-                    _xattribute.SetValue("command log file for ComLineParser");
+                if (!xattribute.Value.Equals("command log file for ComLineParser"))
+                    xattribute.SetValue("command log file for ComLineParser");
             }
 
-            _xattribute = FindXAttribute(LogFile.Root, "modified");
-            if (_xattribute == null)
+            xattribute = FindXAttribute(LogFile.Root, "modified");
+            if (xattribute == null)
             {
                 LogFile.Root.Add(new XAttribute("modified", DateTime.Now.ToString(CultureInfo.CurrentCulture)));
             }
@@ -84,33 +84,29 @@ namespace ComLineParser
 
         protected void LogModified()
         {
-            XAttribute _xattribute = FindXAttribute(LogFile.Root, "modified");
-           if (_xattribute != null) _xattribute.SetValue(DateTime.Now.ToString(CultureInfo.CurrentCulture));
+           var xattribute = FindXAttribute(LogFile.Root, "modified");
+           if (xattribute != null) xattribute.SetValue(DateTime.Now.ToString(CultureInfo.CurrentCulture));
             else LogFile.Root.Add(new XAttribute("modified",DateTime.Now.ToString(CultureInfo.CurrentCulture)));
         }
 
-        protected XElement FindCommandNode(Command _command)
+        protected XElement FindCommandNode(Command command)
         {
             foreach (XElement _command_node in LogFile.Root.Elements())
             {
-                if (String.Compare(_command_node.Name.LocalName,
-                                  _command.Type.ToString(),
-                                  StringComparison.OrdinalIgnoreCase) == 0)
-                    return (_command_node);
+                if (_command_node.Name.LocalName.
+                    Equals(command.Type.ToString(), StringComparison.OrdinalIgnoreCase)) return (_command_node);
             }
-            XElement _new_command_node = new XElement(_command.Type.ToString());
-            LogFile.Root.Add(_new_command_node);
-            return (_new_command_node);
+            var newCommandNode = new XElement(command.Type.ToString());
+            LogFile.Root.Add(newCommandNode);
+            return (newCommandNode);
         }
 
-        protected XAttribute FindXAttribute(XElement _xelement, string _xattribute_name)
+        protected XAttribute FindXAttribute(XElement xelement, string xattributeName)
         {
-            if (_xattribute_name == null) return (null);
+            if (xattributeName == null) return (null);
             return (
-                _xelement.Attributes().FirstOrDefault(
-                    _xattr => String.Compare(_xattr.Name.LocalName,
-                                             _xattribute_name,
-                                             StringComparison.OrdinalIgnoreCase) == 0));
+                xelement.Attributes().FirstOrDefault(
+                    xattr => xattr.Name.LocalName.Equals(xattributeName,StringComparison.OrdinalIgnoreCase)));
         }
 
         protected void CreateCommandXElement(Command command)
