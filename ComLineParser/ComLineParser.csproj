@@ -47,9 +47,11 @@
     <Compile Include="CommandParser.cs" />
     <Compile Include="ICommandLogger\BaseCommandLogger.cs" />
     <Compile Include="ICommandLogger\GenericCommandLogger.cs" />
+    <Compile Include="ICommandLogger\GetUserCommandLogger.cs" />
     <Compile Include="ICommandLogger\ICommandLogger.cs" />
     <Compile Include="ICommandLogger\KeyValueCommandLogger.cs" />
     <Compile Include="ICommandLogger\PrintCommandLogger.cs" />
+    <Compile Include="ICommandLogger\SetUserCommandLogger.cs" />
     <Compile Include="ICommandLogger\UnsupportedCommandLogger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

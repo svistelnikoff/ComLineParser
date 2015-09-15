@@ -12,6 +12,8 @@ namespace ComLineParser
     {
         protected const string LogFilePath = "CommandLog.xml";
         protected const string XDocRootName = "ComLineParser";
+        protected XElement CommandNodeXElement;
+        protected XElement CommandXElement;
 
         protected XDocument LogFile;
 
@@ -113,13 +115,30 @@ namespace ComLineParser
                                              StringComparison.OrdinalIgnoreCase) == 0));
         }
 
-        public virtual void SaveToFile(Command _command)
+        protected void CreateCommandXElement(Command command)
         {
             if (File.Exists(LogFilePath)) OpenLogFile();
             else CreateNewLogFile();
 
-            XElement _command_node = FindCommandNode(_command);
-            _command_node.Add(new XElement(_command.Name,
+            CommandNodeXElement = FindCommandNode(command);
+            CommandXElement = new XElement(command.Name,
+                            new XAttribute("invoked", DateTime.Now.ToString()),
+                            new XAttribute("user", Program.User));
+
+        }
+
+        protected virtual void AddCommandXElementParameters(Command command)
+        {
+            
+        }
+
+        public virtual void SaveToFile(Command command)
+        {
+            if (File.Exists(LogFilePath)) OpenLogFile();
+            else CreateNewLogFile();
+
+            XElement _command_node = FindCommandNode(command);
+            _command_node.Add(new XElement(command.Name,
                             new XAttribute("invoked", DateTime.Now.ToString()))
                 );
 

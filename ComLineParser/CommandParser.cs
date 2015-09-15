@@ -63,6 +63,10 @@ namespace ComLineParser
                     return (new PingCommand());
                 case "-print":
                     return (new PrintCommand());
+                case "-getuser":
+                    return (new GetUserCommand());
+                case "-setuser":
+                    return (new SetUserCommand());
                 default:
                     return (new UnsupportedCommand(_value));
             }

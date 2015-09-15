@@ -56,7 +56,7 @@ namespace ComLineParser
         };
 
         public abstract void Action();
-        public virtual void ParseParameters(string[] _params, ref int _index)
+        public virtual void ParseParameters(string[] _params, ref int commandIndex)
         {
              
         }
@@ -141,9 +141,9 @@ namespace ComLineParser
             CommandLogger.SaveToFile(this);
         }
 
-        public override void ParseParameters(string[] _params, ref int _command_index)
+        public override void ParseParameters(string[] _params, ref int commandIndex)
         {
-            int _param_count = 0, _param_index = _command_index+1;
+            int _param_count = 0, _param_index = commandIndex+1;
             while (_param_index < _params.Length)
             {
                 if (Command.StringIsCommand(_params[_param_index])) break;
@@ -155,15 +155,15 @@ namespace ComLineParser
             if (_param_count % 2 != 0)
             {
                 parameters = new string[_param_count+1];
-                Array.Copy(_params, _command_index+1, parameters, 0, _param_count);
+                Array.Copy(_params, commandIndex+1, parameters, 0, _param_count);
                 parameters[_param_count] = "NULL";
             }
             else
             {
                 parameters = new string[_param_count];
-                Array.Copy(_params, _command_index+1, parameters, 0, _param_count);
+                Array.Copy(_params, commandIndex+1, parameters, 0, _param_count);
             }
-            _command_index += _param_count;
+            commandIndex += _param_count;
         }
     }
 
@@ -209,15 +209,15 @@ namespace ComLineParser
             CommandLogger.SaveToFile(this);
         }
 
-        public override void ParseParameters(string[] _params, ref int _command_index)
+        public override void ParseParameters(string[] _params, ref int commandIndex)
         {
             parameters = new string[1] { String.Empty };
-            int _parameter_index = _command_index + 1;
+            int _parameter_index = commandIndex + 1;
             while (_parameter_index < _params.Length && !StringIsCommand(_params[_parameter_index]))
             {
                 parameters[0] += _params[_parameter_index++];
                 if (_parameter_index < _params.Length) parameters[0] += " ";
-                _command_index++; 
+                commandIndex++; 
             }
         }
 
@@ -229,35 +229,51 @@ namespace ComLineParser
         {
             this.Description = "Set user command invoked";
             this.name = "SetUser";
-            this.type = ECommandTypes.Print;
-            CommandLogger = new PrintCommandLogger();
+            this.type = ECommandTypes.SetUser;
+            CommandLogger = new SetUserCommandLogger();
         }
 
         public override void Action()
         {
-            if (parameters == null || parameters[0] == String.Empty)
+            if (parameters == null || parameters[0] == string.Empty)
             {
-                Console.WriteLine(Description + ", message is empty");
+                Console.WriteLine(Description + ", current user is reseted.");
+                CommandLogger.SaveToFile(this);
+                Program.User = string.Empty;
             }
             else
             {
-                Console.WriteLine(Description + " - printing message:" + parameters[0]);
+                Console.WriteLine(Description + " - new user is set:" + parameters[0]);
+                CommandLogger.SaveToFile(this);
+                Program.User = parameters[0];
             }
-            CommandLogger.SaveToFile(this);
         }
 
-        public override void ParseParameters(string[] _params, ref int _command_index)
+        public override void ParseParameters(string[] _params, ref int commandIndex)
         {
-            parameters = new string[1] { String.Empty };
-            int _parameter_index = _command_index + 1;
-            while (_parameter_index < _params.Length && !StringIsCommand(_params[_parameter_index]))
-            {
-                parameters[0] += _params[_parameter_index++];
-                if (_parameter_index < _params.Length) parameters[0] += " ";
-                _command_index++;
-            }
+            parameters = new string[1] { string.Empty };
+            var parameterIndex = commandIndex + 1;
+            if (parameterIndex >= _params.Length || StringIsCommand(_params[parameterIndex])) return;
+            parameters[0] = _params[parameterIndex];
+            commandIndex++;
+        }
+    }
+
+    public class GetUserCommand : Command
+    {
+        public GetUserCommand()
+        {
+            this.Description = "Get user command invoked";
+            this.name = "GetUser";
+            this.type = ECommandTypes.GetUser;
+            CommandLogger = new GetUserCommandLogger();
         }
 
+        public override void Action()
+        {
+            Console.WriteLine(Description + ", current user is - " + Program.User);
+            CommandLogger.SaveToFile(this);
+       }
     }
 
 

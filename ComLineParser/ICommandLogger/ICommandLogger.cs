@@ -8,6 +8,6 @@ namespace ComLineParser
 {
     public interface ICommandLogger
     {
-        void SaveToFile(Command _command);
+        void SaveToFile(Command command);
     }
 }
