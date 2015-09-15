@@ -51,7 +51,7 @@ namespace ComLineParser
 
         public static Command ParseCommand(string value)
         {
-            switch (value)
+            switch (value.ToLower())
             {
                 case "/?":
                 case "/help":

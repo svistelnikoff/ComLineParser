@@ -49,7 +49,7 @@ namespace ComLineParser
 
         protected void ValidateLogFile()
         {
-            if (LogFile.Root.Name.LocalName.Equals(XDocRootName, StringComparison.OrdinalIgnoreCase))
+            if (!LogFile.Root.Name.LocalName.Equals(XDocRootName, StringComparison.OrdinalIgnoreCase))
                 throw (new Exception("File doesn't contain valid root element"));
             var xattribute = FindXAttribute(LogFile.Root, "description");
             if (xattribute == null)
